@@ -1,0 +1,10 @@
+opencv-python
+mediapipe
+numpy
+streamlit
+pyttsx3
+scipy
+matplotlib
+plotly
+seaborn
+scikit-learn
