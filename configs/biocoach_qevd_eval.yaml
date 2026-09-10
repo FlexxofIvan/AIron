@@ -1,0 +1,65 @@
+
+model:
+    llama2_7b_path: './biocoach/model/Llama-2-7b-hf'
+    kwargs:
+        checkpoint_path: './biocoach/model/ckpts_streamvlm/ckpts_streamvlm/state_dict.pth.tar'
+        biomech_inject_mode: 'append'   
+        morphometric_dir: './biocoach/shapy/'
+        golden_standards_dir: './biocoach/golden_standards/'
+        temporal_window: 3.0
+        strict_checkpoint: False
+        bf16: True
+
+
+        fusion_type: 'cross_attention'    
+        num_heads: 8                      
+        fusion_dropout: 0.1
+        cross_attention_weights_path: './biocoach/model/biocoach_qevd/vision_skeleton_cross_attention.pth'  
+
+        enable_biomech_feedback: True
+        biomech_feedback_weight: 0.01   
+        xattn_config:
+            xattn_type: 'dotprod'
+            xattn_block_size: 1
+            adapter_insert_layers: "[6, 8, 10, 12, 14, 16, 18, 20, 22]"
+            num_of_xattn_heads: 1
+
+        trainable:
+            llm: False
+            xattn: False
+            vision: False
+        peft_config:
+            r: 32
+            lora_alpha: 16
+            lora_dropout: 0.05
+            target_modules:
+                - 'q_proj'
+                - 'v_proj'
+                - 'k_proj'
+                - 'lm_head'
+
+datasets:
+    test:
+        name: 'fitcoach-dataset'
+        relevant_column: 'query'
+        use_tokenized_data_only: False
+        skip_tokenization: True
+        force_collate: True
+        kwargs:
+            data_root: './biocoach/QEVD/QEVD-Dataset/'
+            split: 'test'
+            records_filename: 'feedbacks_long_range.json'  
+
+evaluator:
+    name: 'dynamic_skeleton_evaluator'
+    kwargs:
+        feedbacks_save_folder: './saved_feedbacks/'
+        feedbacks_save_file_name: 'biocoach_qevd_responses'
+        skeleton_window_size: 1     
+        skeleton_fps: 30.0          
+        tolerance: 3.0
+    sampling_kwargs:
+        do_sample: False
+        temperature: 0.
+        max_feedback_length: 128
+        feats_frequency: 4
