@@ -1,18 +1,18 @@
-import cv2
-import mediapipe as mp
-import numpy as np
+import os
+import sys
 import math
+import cv2
+import numpy as np
+import mediapipe as mp
 from typing import Dict, List, Tuple, Optional
 from visualizer import AdvancedVisualizer
 
-import os
-import sys
-import cv2
-import numpy as np
-import mediapipe as mp
+if not hasattr(mp, "solutions"):
+    import mediapipe.python.solutions as solutions
+    mp.solutions = solutions
 
-# Определяем класс прямо здесь, чтобы не импортировать его из main.py
 class SuppressStderr:
+    """Контекстный менеджер для подавления отладочного вывода C++ в MediaPipe"""
     def __enter__(self):
         self._original_stderr = sys.stderr
         sys.stderr = open(os.devnull, 'w')
@@ -23,37 +23,29 @@ class SuppressStderr:
         finally:
             sys.stderr = self._original_stderr
 
+
 class PoseAnalyzer:
-    def __init__(self):
+    def __init__(self, static_mode: bool = False):
         with SuppressStderr():
             self.mp_pose = mp.solutions.pose
             self.pose = self.mp_pose.Pose(
-                static_image_mode=False,
-                model_complexity=0,
-                smooth_landmarks=True,
+                static_image_mode=static_mode,
+                model_complexity=1,
+                smooth_landmarks=not static_mode,
+                enable_segmentation=False,
+                smooth_segmentation=True,
                 min_detection_confidence=0.5,
                 min_tracking_confidence=0.5
             )
-
-        self.mp_pose = mp.solutions.pose
-        self.pose = self.mp_pose.Pose(
-            static_image_mode=False,
-            model_complexity=1,
-            smooth_landmarks=True,
-            enable_segmentation=False,
-            smooth_segmentation=True,
-            min_detection_confidence=0.5,
-            min_tracking_confidence=0.5
-        )
         self.mp_drawing = mp.solutions.drawing_utils
         self.visualizer = AdvancedVisualizer()
         
     def calculate_angle(self, point1: np.ndarray, point2: np.ndarray, point3: np.ndarray) -> float:
-        """Calculate angle between three points"""
+        """Calculate angle between three points in degrees"""
         vector1 = point1 - point2
         vector2 = point3 - point2
         
-        cos_angle = np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2))
+        cos_angle = np.dot(vector1, vector2) / (np.linalg.norm(vector1) * np.linalg.norm(vector2) + 1e-6)
         cos_angle = np.clip(cos_angle, -1.0, 1.0)
         angle = math.degrees(math.acos(cos_angle))
         return angle
@@ -67,7 +59,6 @@ class PoseAnalyzer:
     def analyze_squat(self, landmarks, image_shape: Tuple[int, int]) -> Dict:
         """Analyze squat form"""
         try:
-            # Key landmarks for squat analysis
             left_hip = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_HIP, image_shape)
             left_knee = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_KNEE, image_shape)
             left_ankle = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_ANKLE, image_shape)
@@ -78,27 +69,21 @@ class PoseAnalyzer:
             left_shoulder = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_SHOULDER, image_shape)
             right_shoulder = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.RIGHT_SHOULDER, image_shape)
             
-            # Calculate knee angles
             left_knee_angle = self.calculate_angle(left_hip, left_knee, left_ankle)
             right_knee_angle = self.calculate_angle(right_hip, right_knee, right_ankle)
             
-            # Calculate hip angles
             left_hip_angle = self.calculate_angle(left_shoulder, left_hip, left_knee)
             right_hip_angle = self.calculate_angle(right_shoulder, right_hip, right_knee)
             
-            # Check squat depth (knee angle < 100 degrees for good depth)
             avg_knee_angle = (left_knee_angle + right_knee_angle) / 2
             proper_depth = avg_knee_angle < 100
             
-            # Check knee alignment (knees shouldn't cave inward)
             knee_distance = abs(left_knee[0] - right_knee[0])
             ankle_distance = abs(left_ankle[0] - right_ankle[0])
             knee_alignment = knee_distance >= ankle_distance * 0.8
             
-            # Check back straightness
             back_straight = abs(left_hip_angle - right_hip_angle) < 20
             
-            # Calculate overall form score
             form_score = 0
             if proper_depth:
                 form_score += 40
@@ -127,24 +112,17 @@ class PoseAnalyzer:
     def analyze_pushup(self, landmarks, image_shape: Tuple[int, int]) -> Dict:
         """Analyze push-up form"""
         try:
-            # Key landmarks for push-up analysis
             left_shoulder = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_SHOULDER, image_shape)
             left_elbow = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_ELBOW, image_shape)
             left_wrist = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_WRIST, image_shape)
             left_hip = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_HIP, image_shape)
             left_ankle = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_ANKLE, image_shape)
             
-            # Calculate elbow angle
             elbow_angle = self.calculate_angle(left_shoulder, left_elbow, left_wrist)
-            
-            # Check body alignment (straight line from shoulders to ankles)
             shoulder_hip_ankle_angle = self.calculate_angle(left_shoulder, left_hip, left_ankle)
+            
             body_straight = 160 < shoulder_hip_ankle_angle < 200
-            
-            # Check if at bottom of push-up (elbow angle around 90 degrees)
             at_bottom = 70 < elbow_angle < 110
-            
-            # Check full range of motion
             full_rom = elbow_angle < 120
             
             form_score = 0
@@ -171,20 +149,16 @@ class PoseAnalyzer:
     def analyze_downward_dog(self, landmarks, image_shape: Tuple[int, int]) -> Dict:
         """Analyze downward dog yoga pose"""
         try:
-            # Key landmarks
             left_wrist = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_WRIST, image_shape)
             left_shoulder = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_SHOULDER, image_shape)
             left_hip = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_HIP, image_shape)
             left_ankle = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_ANKLE, image_shape)
             
-            # Calculate angles for triangle formation
             arm_angle = self.calculate_angle(left_wrist, left_shoulder, left_hip)
             leg_angle = self.calculate_angle(left_shoulder, left_hip, left_ankle)
             
-            # Check for inverted V shape
             proper_triangle = 60 < arm_angle < 100 and 60 < leg_angle < 100
             
-            # Check arm and leg straightness
             left_elbow = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_ELBOW, image_shape)
             left_knee = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_KNEE, image_shape)
             
@@ -214,7 +188,6 @@ class PoseAnalyzer:
     def analyze_warrior_pose(self, landmarks, image_shape: Tuple[int, int]) -> Dict:
         """Analyze warrior pose"""
         try:
-            # Key landmarks
             left_hip = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_HIP, image_shape)
             left_knee = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_KNEE, image_shape)
             left_ankle = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_ANKLE, image_shape)
@@ -227,17 +200,12 @@ class PoseAnalyzer:
             left_wrist = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.LEFT_WRIST, image_shape)
             right_wrist = self.get_landmark_coordinates(landmarks, self.mp_pose.PoseLandmark.RIGHT_WRIST, image_shape)
             
-            # Check lunge depth (front leg should be at ~90 degrees)
             front_leg_angle = min(
                 self.calculate_angle(left_hip, left_knee, left_ankle),
                 self.calculate_angle(right_hip, right_knee, right_ankle)
             )
             proper_lunge = 80 < front_leg_angle < 100
-            
-            # Check arm positioning (arms should be extended)
             arms_extended = left_wrist[1] < left_shoulder[1] and right_wrist[1] < right_shoulder[1]
-            
-            # Check torso alignment
             torso_angle = self.calculate_angle(left_shoulder, left_hip, left_knee)
             torso_straight = torso_angle > 160
             
@@ -311,16 +279,15 @@ class PoseAnalyzer:
     
     def process_frame(self, frame: np.ndarray, exercise_mode: str, sensitivity: float) -> Tuple[np.ndarray, Dict]:
         """Process video frame and analyze pose"""
-        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        rgb_frame = cv2.cvtColor(frame.copy(), cv2.COLOR_BGR2RGB)
         results = self.pose.process(rgb_frame)
         
-        analysis_results = {'detected': False}
+        analysis_results = {'detected': False, 'form_score': 0, 'exercise': exercise_mode, 'feedback': []}
         
         if results.pose_landmarks:
             analysis_results['detected'] = True
             analysis_results['landmarks'] = results.pose_landmarks
             
-            # Analyze based on exercise mode
             if exercise_mode == "Squats":
                 analysis_results.update(self.analyze_squat(results.pose_landmarks, frame.shape))
             elif exercise_mode == "Push-ups":
@@ -330,26 +297,25 @@ class PoseAnalyzer:
             elif exercise_mode == "Warrior Pose":
                 analysis_results.update(self.analyze_warrior_pose(results.pose_landmarks, frame.shape))
             elif exercise_mode == "Auto-detect":
-                # Auto-detection logic would go here
-                analysis_results.update({'exercise': 'auto_detect', 'form_score': 0})
+                analysis_results.update(self.analyze_squat(results.pose_landmarks, frame.shape))
             
-            # Enhanced visualizations
             frame = self.visualizer.draw_enhanced_skeleton(frame, results.pose_landmarks, analysis_results)
             frame = self.visualizer.draw_angle_measurements(frame, results.pose_landmarks, analysis_results)
             frame = self.visualizer.draw_form_zones(frame, results.pose_landmarks, analysis_results)
+            self._add_form_overlay(frame, analysis_results.get('form_score', 0))
         
         return frame, analysis_results
     
     def _add_form_overlay(self, frame: np.ndarray, form_score: int):
         """Add form quality overlay to frame"""
         if form_score >= 80:
-            color = (0, 255, 0)  # Green
+            color = (0, 255, 0)
             status = "EXCELLENT"
         elif form_score >= 60:
-            color = (0, 255, 255)  # Yellow
+            color = (0, 255, 255)
             status = "GOOD"
         else:
-            color = (0, 0, 255)  # Red
+            color = (0, 0, 255)
             status = "NEEDS WORK"
         
         cv2.rectangle(frame, (10, 10), (300, 60), color, -1)
