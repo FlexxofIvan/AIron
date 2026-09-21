@@ -1,0 +1,213 @@
+{
+    "obs_id": 1,
+    "start": [
+        1,
+        1
+    ],
+    "target_slot": [
+        6,
+        3
+    ],
+    "total_cost": 43,
+    "path_coordinates": [
+        [
+            1,
+            1
+        ],
+        [
+            2,
+            1
+        ],
+        [
+            3,
+            1
+        ],
+        [
+            4,
+            1
+        ],
+        [
+            5,
+            1
+        ],
+        [
+            6,
+            1
+        ],
+        [
+            6,
+            2
+        ],
+        [
+            6,
+            3
+        ]
+    ],
+    "movement_commands": [
+        {
+            "action": "stop",
+            "duration": 0.5
+        },
+        {
+            "action": "drive",
+            "wheel": 1,
+            "steer": 1,
+            "slow": true,
+            "duration": 3.8
+        },
+        {
+            "action": "drive",
+            "wheel": 1,
+            "steer": 0,
+            "slow": false,
+            "duration": 0.42
+        },
+        {
+            "action": "stop",
+            "duration": 0.5
+        },
+        {
+            "action": "drive",
+            "wheel": 1,
+            "steer": -1,
+            "slow": true,
+            "duration": 1.9
+        },
+        {
+            "action": "drive",
+            "wheel": 1,
+            "steer": 0,
+            "slow": false,
+            "duration": 0.42
+        },
+        {
+            "action": "stop",
+            "duration": 0.5
+        },
+        {
+            "action": "stealth",
+            "on": true,
+            "duration": 0.0
+        },
+        {
+            "action": "camera-h",
+            "dir": 1,
+            "duration": 0.5
+        },
+        {
+            "action": "camera-h",
+            "dir": 0
+        },
+        {
+            "action": "camera-h",
+            "dir": -1,
+            "duration": 0.5
+        },
+        {
+            "action": "camera-h",
+            "dir": 0
+        }
+    ],
+    "final_heading": "EAST",
+    "return_path_coordinates": [
+        [
+            6,
+            3
+        ],
+        [
+            6,
+            2
+        ],
+        [
+            6,
+            1
+        ],
+        [
+            5,
+            1
+        ],
+        [
+            4,
+            1
+        ],
+        [
+            3,
+            1
+        ],
+        [
+            2,
+            1
+        ],
+        [
+            1,
+            1
+        ]
+    ],
+    "return_commands": [
+        {
+            "action": "stop",
+            "duration": 0.5
+        },
+        {
+            "action": "drive",
+            "wheel": 1,
+            "steer": 1,
+            "slow": true,
+            "duration": 3.8
+        },
+        {
+            "action": "drive",
+            "wheel": 1,
+            "steer": 0,
+            "slow": false,
+            "duration": 0.42
+        },
+        {
+            "action": "stop",
+            "duration": 0.5
+        },
+        {
+            "action": "drive",
+            "wheel": 1,
+            "steer": 1,
+            "slow": true,
+            "duration": 1.9
+        },
+        {
+            "action": "drive",
+            "wheel": 1,
+            "steer": 0,
+            "slow": false,
+            "duration": 0.42
+        },
+        {
+            "action": "stop",
+            "duration": 0.5
+        },
+        {
+            "action": "stealth",
+            "on": true,
+            "duration": 0.0
+        },
+        {
+            "action": "camera-h",
+            "dir": 1,
+            "duration": 0.5
+        },
+        {
+            "action": "camera-h",
+            "dir": 0
+        },
+        {
+            "action": "camera-h",
+            "dir": -1,
+            "duration": 0.5
+        },
+        {
+            "action": "camera-h",
+            "dir": 0
+        }
+    ],
+    "return_initial_heading": "EAST",
+    "return_final_heading": "NORTH"
+}
