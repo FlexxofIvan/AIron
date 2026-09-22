@@ -1,0 +1,39 @@
+# Virtual environment
+fitness_env/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Large files & Installers
+*.sh
+*.exe
+*.dmg
+*.task
+*.bin
+*.weights
+
+# Jupyter
+.ipynb_checkpoints/
+.virtual_documents/
+
+# Experiment data
+exp_data/

@@ -1,32 +1,9 @@
-# BioCoach — pip requirements (versions match the environment used for the released results).
-#
-# Install PyTorch FIRST, matching your CUDA toolkit (we used CUDA 12.1); flash-attn then builds
-# against it. The rest of this file can be installed afterwards:
-#   pip install torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cu121
-#   pip install -r requirements.txt
-
-torch==2.5.1
-torchvision==0.20.1
-flash-attn==2.8.3
-
-transformers==4.57.1
-tokenizers==0.22.1
-huggingface-hub==0.35.1
-safetensors==0.6.2
-peft==0.5.0
-datasets==2.14.6
-evaluate==0.4.6
-accelerate==1.11.0
-bitsandbytes==0.43.1
-
+mediapipe==0.10.14
+opencv-python==4.10.0.84
+streamlit==1.35.0
 numpy==1.26.4
-scipy==1.15.3
-pyarrow==14.0.1
-opencv-python==4.9.0.80
-
-rouge_score==0.1.2
-bert_score==0.3.13
-nltk==3.9.1
-sentencepiece==0.2.1
-PyYAML==6.0
-tqdm
+matplotlib
+pandas
+scikit-learn
+pyttsx3
+python-multipart
