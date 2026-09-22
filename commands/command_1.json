@@ -1,0 +1,65 @@
+[
+    {
+        "action": "stop",
+        "duration": 0.5
+    },
+    {
+        "action": "drive",
+        "wheel": 1,
+        "steer": 1,
+        "slow": true,
+        "duration": 3.8
+    },
+    {
+        "action": "drive",
+        "wheel": 1,
+        "steer": 0,
+        "slow": false,
+        "duration": 0.42
+    },
+    {
+        "action": "stop",
+        "duration": 0.5
+    },
+    {
+        "action": "drive",
+        "wheel": 1,
+        "steer": -1,
+        "slow": true,
+        "duration": 1.9
+    },
+    {
+        "action": "drive",
+        "wheel": 1,
+        "steer": 0,
+        "slow": false,
+        "duration": 0.42
+    },
+    {
+        "action": "stop",
+        "duration": 0.5
+    },
+    {
+        "action": "stealth",
+        "on": true,
+        "duration": 0.0
+    },
+    {
+        "action": "camera-h",
+        "dir": 1,
+        "duration": 0.5
+    },
+    {
+        "action": "camera-h",
+        "dir": 0
+    },
+    {
+        "action": "camera-h",
+        "dir": -1,
+        "duration": 0.5
+    },
+    {
+        "action": "camera-h",
+        "dir": 0
+    }
+]
