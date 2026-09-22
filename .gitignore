@@ -30,3 +30,10 @@ Thumbs.db
 *.task
 *.bin
 *.weights
+
+# Jupyter
+.ipynb_checkpoints/
+.virtual_documents/
+
+# Experiment data
+exp_data/
