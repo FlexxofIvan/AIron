@@ -22,3 +22,11 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Large files & Installers
+*.sh
+*.exe
+*.dmg
+*.task
+*.bin
+*.weights

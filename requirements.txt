@@ -1,10 +1,9 @@
-opencv-python
-mediapipe
-numpy
-streamlit
-pyttsx3
-scipy
+mediapipe==0.10.14
+opencv-python==4.10.0.84
+streamlit==1.35.0
+numpy==1.26.4
 matplotlib
-plotly
-seaborn
+pandas
 scikit-learn
+pyttsx3
+python-multipart

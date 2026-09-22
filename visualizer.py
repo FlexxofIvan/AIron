@@ -447,8 +447,16 @@ class AdvancedVisualizer:
         exercise_names = list(exercises.keys())
         rep_counts = [exercises[ex]['reps'] for ex in exercise_names]
         
-        ax.pie(rep_counts, labels=exercise_names, autopct='%1.1f%%', startangle=90)
+        #ax.pie(rep_counts, labels=exercise_names, autopct='%1.1f%%', startangle=90)
+        if sum(rep_counts) > 0:
+            ax.pie(rep_counts, labels=exercise_names, autopct='%1.1f%%', startangle=90)
+        else:
+            # Если выполненных повторов 0, выводим сообщение вместо падающего графика
+            ax.text(0.5, 0.5, 'No repetitions recorded yet', 
+                ha='center', va='center', fontsize=12, transform=ax.transAxes)
+            ax.axis('off')
         ax.set_title('Exercise Breakdown')
+
     
     def _plot_form_distribution(self, ax, session_data: Dict):
         """Plot form score distribution"""
@@ -493,7 +501,10 @@ class AdvancedVisualizer:
         ax.set_title('Top Mistakes')
         
         # Wrap long mistake text
-        ax.set_yticklabels([mistake[:30] + '...' if len(mistake) > 30 else mistake for mistake in mistakes])
+        #ax.set_yticklabels([mistake[:30] + '...' if len(mistake) > 30 else mistake for mistake in mistakes])
+        labels = [mistake[:30] + '...' if len(mistake) > 30 else mistake for mistake in mistakes]
+        ax.set_yticks(range(len(labels)))  # Явно фиксируем деления
+        ax.set_yticklabels(labels)
     
     def _plot_progress_timeline(self, ax, session_data: Dict):
         """Plot progress timeline showing improvement over session"""
