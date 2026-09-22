@@ -3,6 +3,8 @@ import mediapipe as mp
 import numpy as np
 import math
 from typing import Dict, List, Tuple, Optional
+
+from Human_repr import Human
 from visualizer import AdvancedVisualizer
 
 class PoseAnalyzer:
@@ -19,7 +21,7 @@ class PoseAnalyzer:
         )
         self.mp_drawing = mp.solutions.drawing_utils
         self.visualizer = AdvancedVisualizer()
-        
+
     def calculate_angle(self, point1: np.ndarray, point2: np.ndarray, point3: np.ndarray) -> float:
         """Calculate angle between three points"""
         vector1 = point1 - point2
@@ -35,6 +37,23 @@ class PoseAnalyzer:
         height, width = image_shape[:2]
         landmark = landmarks.landmark[landmark_idx]
         return np.array([landmark.x * width, landmark.y * height])
+
+    def analyze_frame(self, frame, human_config):
+
+        rgb = cv2.cvtColor(
+            frame,
+            cv2.COLOR_BGR2RGB
+        )
+
+        results = self.pose.process(rgb)
+
+        if results.pose_world_landmarks is None:
+            return None
+
+        return Human(
+            results.pose_world_landmarks,
+            human_config
+        )
     
     def analyze_squat(self, landmarks, image_shape: Tuple[int, int]) -> Dict:
         """Analyze squat form"""

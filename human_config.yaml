@@ -1,0 +1,285 @@
+derived_points:
+
+  MID_SHOULDER:
+    type: midpoint
+    points:
+      - LEFT_SHOULDER
+      - RIGHT_SHOULDER
+
+  MID_HIP:
+    type: midpoint
+    points:
+      - LEFT_HIP
+      - RIGHT_HIP
+
+
+joint_angles:
+
+  left_knee:
+    points:
+      - LEFT_HIP
+      - LEFT_KNEE
+      - LEFT_ANKLE
+    description: >
+      Angle between the left thigh and left shin,
+      measured at the left knee.
+      Smaller values indicate greater knee flexion.
+
+  right_knee:
+    points:
+      - RIGHT_HIP
+      - RIGHT_KNEE
+      - RIGHT_ANKLE
+    description: >
+      Angle between the right thigh and right shin,
+      measured at the right knee.
+      Smaller values indicate greater knee flexion.
+
+
+  left_hip:
+    points:
+      - LEFT_SHOULDER
+      - LEFT_HIP
+      - LEFT_KNEE
+    description: >
+      Angle between the trunk and the left thigh,
+      measured at the left hip joint.
+      Smaller values indicate greater hip flexion.
+
+  right_hip:
+    points:
+      - RIGHT_SHOULDER
+      - RIGHT_HIP
+      - RIGHT_KNEE
+    description: >
+      Angle between the trunk and the right thigh,
+      measured at the right hip joint.
+      Smaller values indicate greater hip flexion.
+
+
+  left_ankle:
+    points:
+      - LEFT_KNEE
+      - LEFT_ANKLE
+      - LEFT_FOOT_INDEX
+    description: >
+      Angle between the left shin and the left foot,
+      measured at the left ankle joint.
+      Reflects ankle dorsiflexion or plantarflexion.
+
+  right_ankle:
+    points:
+      - RIGHT_KNEE
+      - RIGHT_ANKLE
+      - RIGHT_FOOT_INDEX
+    description: >
+      Angle between the right shin and the right foot,
+      measured at the right ankle joint.
+      Reflects ankle dorsiflexion or plantarflexion.
+
+
+  left_elbow:
+    points:
+      - LEFT_SHOULDER
+      - LEFT_ELBOW
+      - LEFT_WRIST
+    description: >
+      Angle between the left upper arm and left forearm,
+      measured at the left elbow joint.
+
+  right_elbow:
+    points:
+      - RIGHT_SHOULDER
+      - RIGHT_ELBOW
+      - RIGHT_WRIST
+    description: >
+      Angle between the right upper arm and right forearm,
+      measured at the right elbow joint.
+
+
+  left_shoulder:
+    points:
+      - LEFT_ELBOW
+      - LEFT_SHOULDER
+      - LEFT_HIP
+    description: >
+      Angle between the left upper arm and the trunk,
+      measured at the left shoulder joint.
+
+  right_shoulder:
+    points:
+      - RIGHT_ELBOW
+      - RIGHT_SHOULDER
+      - RIGHT_HIP
+    description: >
+      Angle between the right upper arm and the trunk,
+      measured at the right shoulder joint.
+
+
+  left_wrist:
+    points:
+      - LEFT_ELBOW
+      - LEFT_WRIST
+      - LEFT_INDEX
+    description: >
+      Angle between the left forearm and the left hand,
+      measured at the left wrist joint.
+
+  right_wrist:
+    points:
+      - RIGHT_ELBOW
+      - RIGHT_WRIST
+      - RIGHT_INDEX
+    description: >
+      Angle between the right forearm and the right hand,
+      measured at the right wrist joint.
+
+
+body_angles:
+
+  trunk_angle_from_vertical:
+    type: segment_to_vertical
+    points:
+      - MID_HIP
+      - MID_SHOULDER
+    description: >
+      Inclination of the trunk relative to the vertical axis.
+      0 degrees means the trunk is perfectly upright.
+
+  left_thigh_angle_from_vertical:
+    type: segment_to_vertical
+    points:
+      - LEFT_HIP
+      - LEFT_KNEE
+    description: >
+      Inclination of the left thigh relative to the vertical axis.
+
+  right_thigh_angle_from_vertical:
+    type: segment_to_vertical
+    points:
+      - RIGHT_HIP
+      - RIGHT_KNEE
+    description: >
+      Inclination of the right thigh relative to the vertical axis.
+
+  left_shin_angle_from_vertical:
+    type: segment_to_vertical
+    points:
+      - LEFT_KNEE
+      - LEFT_ANKLE
+    description: >
+      Inclination of the left shin relative to the vertical axis.
+
+  right_shin_angle_from_vertical:
+    type: segment_to_vertical
+    points:
+      - RIGHT_KNEE
+      - RIGHT_ANKLE
+    description: >
+      Inclination of the right shin relative to the vertical axis.
+
+
+orientation:
+
+  trunk:
+    points:
+      - MID_HIP
+      - MID_SHOULDER
+    description: >
+      Normalized 3D direction vector of the trunk segment,
+      pointing from the midpoint of the hips toward the midpoint
+      of the shoulders.
+
+  left_upper_arm:
+    points:
+      - LEFT_SHOULDER
+      - LEFT_ELBOW
+    description: >
+      Normalized 3D direction vector of the left upper arm,
+      pointing from the left shoulder toward the left elbow.
+
+  right_upper_arm:
+    points:
+      - RIGHT_SHOULDER
+      - RIGHT_ELBOW
+    description: >
+      Normalized 3D direction vector of the right upper arm,
+      pointing from the right shoulder toward the right elbow.
+
+  left_forearm:
+    points:
+      - LEFT_ELBOW
+      - LEFT_WRIST
+    description: >
+      Normalized 3D direction vector of the left forearm,
+      pointing from the left elbow toward the left wrist.
+
+  right_forearm:
+    points:
+      - RIGHT_ELBOW
+      - RIGHT_WRIST
+    description: >
+      Normalized 3D direction vector of the right forearm,
+      pointing from the right elbow toward the right wrist.
+
+  left_thigh:
+    points:
+      - LEFT_HIP
+      - LEFT_KNEE
+    description: >
+      Normalized 3D direction vector of the left thigh,
+      pointing from the left hip toward the left knee.
+
+  right_thigh:
+    points:
+      - RIGHT_HIP
+      - RIGHT_KNEE
+    description: >
+      Normalized 3D direction vector of the right thigh,
+      pointing from the right hip toward the right knee.
+
+  left_shin:
+    points:
+      - LEFT_KNEE
+      - LEFT_ANKLE
+    description: >
+      Normalized 3D direction vector of the left shin,
+      pointing from the left knee toward the left ankle.
+
+  right_shin:
+    points:
+      - RIGHT_KNEE
+      - RIGHT_ANKLE
+    description: >
+      Normalized 3D direction vector of the right shin,
+      pointing from the right knee toward the right ankle.
+
+visualization:
+
+  print:
+    joint_angles: true
+    body_angles: true
+    orientation: true
+    landmark_visibility: true
+
+  important_landmarks:
+    - LEFT_SHOULDER
+    - RIGHT_SHOULDER
+    - LEFT_HIP
+    - RIGHT_HIP
+    - LEFT_KNEE
+    - RIGHT_KNEE
+    - LEFT_ANKLE
+    - RIGHT_ANKLE
+    - LEFT_FOOT_INDEX
+    - RIGHT_FOOT_INDEX
+
+  test_angle:
+    enabled: true
+    points:
+      - LEFT_SHOULDER
+      - LEFT_ELBOW
+      - LEFT_WRIST
+
+  skeleton_3d:
+    enabled: true
